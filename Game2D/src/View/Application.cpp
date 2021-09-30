@@ -1,9 +1,8 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include "../Controller/Game.h"
 #include "ResourceManager.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 // GLFW function declarations
@@ -58,12 +57,15 @@ auto main() -> int {
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 
-    while (!glfwWindowShouldClose(window)) {
+
+    while (glfwWindowShouldClose(window) == 0) {
         // calculate delta time
         // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+
         glfwPollEvents();
 
         // manage user input
@@ -106,7 +108,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    // make sure the viewport matches the new window dimensions; note that width and 
+    // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }

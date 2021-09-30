@@ -1,24 +1,24 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include "DisplayBlock.h"
 #include "../Constants.h"
+#include "DisplayBlock.h"
 #include "ResourceManager.h"
-#include <ctype.h>
 
-class GameInformation
-{
-public:
-	std::array<float, 2> position;
-	unsigned int amountDisplayBlocks;
-	std::array<float, 4> size;
+#include <cctype>
+#include <string>
+#include <vector>
 
-	std::string text;
-	std::vector<DisplayBlock*> displayBlocks;
+class GameInformation {
+  public:
+    std::array<float, 2> position{};
+    unsigned int amountDisplayBlocks{};
+    std::array<float, 4> size{};
 
-	GameInformation();
-	GameInformation(std::array<float, 2> position, std::array<float, 4> size, int amountDisplayBlocks);
+    std::string text;
+    std::vector<DisplayBlock *> displayBlocks;
 
-	void show(std::string text);
+    GameInformation() = default;
+    GameInformation(std::array<float, 2> position, std::array<float, 4> size, int amountDisplayBlocks);
+
+    void show(std::string displayText);
 };

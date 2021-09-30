@@ -1,22 +1,18 @@
 #include "SpriteRenderer.h"
 
-SpriteRenderer::SpriteRenderer(Shader& shader) : shader(shader)
-{
-    //this->soundDevice = SoundDevice::get();
-    //SoundBuffer::get()->addSoundEffect("../Game2D/res/soundeffects/PushIceBlock.mp3", "pushIceBlock");
+SpriteRenderer::SpriteRenderer(Shader &shader) : shader(shader) {
     this->initRenderData();
 
     this->initDisplayInformation();
     this->loadSprites();
 }
 
-SpriteRenderer::~SpriteRenderer()
-{
+SpriteRenderer::~SpriteRenderer() {
     glDeleteVertexArrays(1, &this->quadVAO);
 }
 
-void SpriteRenderer::DrawSprite(Texture2D& texture, std::array<float, 2> position, std::array<float, 4> size, std::array<float, 3> color)
-{
+void SpriteRenderer::DrawSprite(Texture2D &texture, std::array<float, 2> position, std::array<float, 4> size,
+                                std::array<float, 3> color) {
     // prepare transformations
     this->shader.Use();
 
@@ -35,40 +31,45 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, std::array<float, 2> positio
     glBindVertexArray(0);
 }
 
-void SpriteRenderer::DrawLevel(GameLevel& gameLevel)
-{
-    for (GameObject& wall : leftWallAnimator->wall->wallComponents)
+void SpriteRenderer::DrawLevel(GameLevel &gameLevel) {
+    for (GameObject &wall : leftWallAnimator->wall->wallComponents) {
         this->DrawSprite(leftWallAnimator->sprite, wall.position, wall.size);
+    }
 
-    for (GameObject& wall : rightWallAnimator->wall->wallComponents)
+    for (GameObject &wall : rightWallAnimator->wall->wallComponents) {
         this->DrawSprite(rightWallAnimator->sprite, wall.position, wall.size);
+    }
 
-    for (GameObject& wall : topWallAnimator->wall->wallComponents)
+    for (GameObject &wall : topWallAnimator->wall->wallComponents) {
         this->DrawSprite(topWallAnimator->sprite, wall.position, wall.size);
+    }
 
-    for (GameObject& wall : bottomWallAnimator->wall->wallComponents)
+    for (GameObject &wall : bottomWallAnimator->wall->wallComponents) {
         this->DrawSprite(bottomWallAnimator->sprite, wall.position, wall.size);
+    }
 
-    for (BlockAnimator* blockAnimator : blockAnimators)
-        if (blockAnimator->block->state != BlockState::BROKEN)
+    for (BlockAnimator *blockAnimator : blockAnimators) {
+        if (blockAnimator->block->state != BlockState::BROKEN) {
             this->DrawSprite(blockAnimator->sprite, blockAnimator->block->position, blockAnimator->block->size);
+        }
+    }
 
-    for (EnemyAnimator* enemyAnimator : enemyAnimators)
+    for (EnemyAnimator *enemyAnimator : enemyAnimators) {
         this->DrawSprite(enemyAnimator->sprite, enemyAnimator->enemy->position, enemyAnimator->enemy->size);
+    }
 
     this->DrawSprite(pengoAnimator->sprite, pengoAnimator->pengo->position, pengoAnimator->pengo->size);
-    //this->DrawObject(gameLevel.d);
+    // this->DrawObject(gameLevel.d);
     this->P1.show("1P");
     this->DrawDisplayElement(this->P1);
     this->Score.show(std::to_string(gameLevel.score.score));
     this->DrawDisplayElement(this->Score);
 }
 
-void SpriteRenderer::initRenderData()
-{
+void SpriteRenderer::initRenderData() {
     // configure VAO/VBO
-    unsigned int VBO;
-    float vertices[] = {
+    unsigned int VBO = 0;
+    std::array vertices = {
             // clang-format off
             // pos                                                                                                                            // tex
             //x                                                             //y
@@ -86,23 +87,21 @@ void SpriteRenderer::initRenderData()
     glGenBuffers(1, &VBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
     glBindVertexArray(this->quadVAO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
-//void SpriteRenderer::DrawObject(GameObject& gameObject)
+// void SpriteRenderer::DrawObject(GameObject& gameObject)
 //{
 //    this->DrawSprite(gameObject.sprite, gameObject.position, gameObject.size);
 //}
 
-void SpriteRenderer::DrawDisplayElement(GameInformation& gameInformation)
-{
-    for (DisplayBlock* d : gameInformation.displayBlocks)
-    {
+void SpriteRenderer::DrawDisplayElement(GameInformation &gameInformation) {
+    for (DisplayBlock *d : gameInformation.displayBlocks) {
         this->DrawSprite(d->sprite, d->position, d->size);
     }
 }
@@ -115,24 +114,30 @@ void SpriteRenderer::updateView(float dt) {
     this->leftWallAnimator->animate(dt);
     this->rightWallAnimator->animate(dt);
 
-    for (BlockAnimator *ba : this->blockAnimators)
+    for (BlockAnimator *ba : this->blockAnimators) {
         ba->animate(dt);
-    for (EnemyAnimator *ea : this->enemyAnimators)
+    }
+    for (EnemyAnimator *ea : this->enemyAnimators) {
         ea->animate(dt);
+    }
 }
 
 void SpriteRenderer::initDisplayInformation() {
-    this->P1 = GameInformation({(-0.5f * Constants::WIDTH_UNIT + 0.5f * Constants::WIDTH_UNIT), -0.5f * Constants::HEIGHT_UNIT + 17 * Constants::HEIGHT_UNIT},
-                         {0.5f, 0.5f, (0.5f * (-1 + 0.5f * Constants::WIDTH_UNIT)) + 0.5f * Constants::WIDTH_UNIT,
-                          (0.5f * (-1 + 0.5f * Constants::HEIGHT_UNIT)) + 0.5f * Constants::HEIGHT_UNIT}, 2);
-    //this->P1.show("1P");
-    this->Score = GameInformation({(-0.5f * Constants::WIDTH_UNIT + 4.5f * Constants::WIDTH_UNIT), -0.5f * Constants::HEIGHT_UNIT + 17 * Constants::HEIGHT_UNIT},
+    this->P1 = GameInformation({(-0.5f * Constants::WIDTH_UNIT + 0.5f * Constants::WIDTH_UNIT),
+                                -0.5f * Constants::HEIGHT_UNIT + 17 * Constants::HEIGHT_UNIT},
+                               {0.5f, 0.5f, (0.5f * (-1 + 0.5f * Constants::WIDTH_UNIT)) + 0.5f * Constants::WIDTH_UNIT,
+                                (0.5f * (-1 + 0.5f * Constants::HEIGHT_UNIT)) + 0.5f * Constants::HEIGHT_UNIT},
+                               2);
+    // this->P1.show("1P");
+    this->Score =
+            GameInformation({(-0.5f * Constants::WIDTH_UNIT + 4.5f * Constants::WIDTH_UNIT),
+                             -0.5f * Constants::HEIGHT_UNIT + 17 * Constants::HEIGHT_UNIT},
                             {0.5f, 0.5f, (0.5f * (-1 + 0.5f * Constants::WIDTH_UNIT)) + 0.5f * Constants::WIDTH_UNIT,
-                             (0.5f * (-1 + 0.5f * Constants::HEIGHT_UNIT)) + 0.5f * Constants::HEIGHT_UNIT}, 6);
+                             (0.5f * (-1 + 0.5f * Constants::HEIGHT_UNIT)) + 0.5f * Constants::HEIGHT_UNIT},
+                            6);
 }
 
-void SpriteRenderer::loadSprites()
-{
+void SpriteRenderer::loadSprites() {
     // load textures
     // Load all Iceblock Textures
     ResourceManager::LoadTexture("../Game2D/res/sprites/Iceblock.bmp", "iceblock");
@@ -217,43 +222,41 @@ void SpriteRenderer::loadSprites()
     ResourceManager::LoadTexture("../Game2D/res/sprites/9.bmp", "9");
 }
 
-void SpriteRenderer::initLevelView(GameLevel* gameLevel) {
-    //initialize pengo view
+void SpriteRenderer::initLevelView(GameLevel *gameLevel) {
+    // initialize pengo view
     this->pengoAnimator = new PengoAnimator(&gameLevel->Pengo, 0.5f, 0.25f, ResourceManager::GetTexture("pengoRight"));
 
-    //initialize block views
-    for (Block &b : gameLevel->Blocks){
-        if(!b.isUnbreakable){
+    // initialize block views
+    for (Block &b : gameLevel->Blocks) {
+        if (!b.isUnbreakable) {
             this->blockAnimators.push_back(new BlockAnimator(&b, 3.0f, 0.5f, ResourceManager::GetTexture("iceblock")));
-        } else if(b.isUnbreakable){
-            this->blockAnimators.push_back(new BlockAnimator(&b, 3.0f, 0.5f, ResourceManager::GetTexture("diamondblock")));
+        } else if (b.isUnbreakable) {
+            this->blockAnimators.push_back(
+                    new BlockAnimator(&b, 3.0f, 0.5f, ResourceManager::GetTexture("diamondblock")));
         }
     }
 
-    //initialize wall views
+    // initialize wall views
     this->bottomWallAnimator = new WallAnimator(&gameLevel->BottomWall, 0.5f);
     this->topWallAnimator = new WallAnimator(&gameLevel->TopWall, 0.5f);
     this->leftWallAnimator = new WallAnimator(&gameLevel->LeftWall, 0.5f);
     this->rightWallAnimator = new WallAnimator(&gameLevel->RightWall, 0.5f);
 
-    //initialize enemy views
-    for (std::shared_ptr<Enemy>& e : gameLevel->Enemies) {
+    // initialize enemy views
+    for (std::shared_ptr<Enemy> &e : gameLevel->Enemies) {
         this->enemyAnimators.push_back(new EnemyAnimator(e, 0.4f, 3.0f, 1.5f));
     }
 }
 
-void SpriteRenderer::update(GameLevel* gameLevel)
-{
+void SpriteRenderer::update(GameLevel *gameLevel) {
     std::shared_ptr<Enemy> enemy = nullptr;
     // Check if an enemy was killed (= if there exists an animator for whose enemy does not exist anymore)
-    for (EnemyAnimator* ea : this->enemyAnimators) {
+    for (EnemyAnimator *ea : this->enemyAnimators) {
         if (std::find(gameLevel->Enemies.begin(), gameLevel->Enemies.end(), ea->enemy) != gameLevel->Enemies.end()) {
             continue;
         }
-        else {
-            enemy = ea->enemy;
-            break;
-        }
+        enemy = ea->enemy;
+        break;
     }
     if (enemy != nullptr) {
         removeAnimatorOfKilledEnemy(enemy);
@@ -262,8 +265,8 @@ void SpriteRenderer::update(GameLevel* gameLevel)
 
     // Check if an enemy was spawned (= if there exists an enemy with no animator)
     bool animatorExists = false;
-    for (std::shared_ptr<Enemy>& e : gameLevel->Enemies) {
-        for (EnemyAnimator* ea : this->enemyAnimators) {
+    for (std::shared_ptr<Enemy> &e : gameLevel->Enemies) {
+        for (EnemyAnimator *ea : this->enemyAnimators) {
             if (ea->enemy->id == e->id) {
                 animatorExists = true;
             }
@@ -272,9 +275,7 @@ void SpriteRenderer::update(GameLevel* gameLevel)
             enemy = e;
             break;
         }
-        else {
-            animatorExists = false;
-        }
+        animatorExists = false;
     }
 
     if (enemy != nullptr) {
@@ -282,14 +283,13 @@ void SpriteRenderer::update(GameLevel* gameLevel)
     }
 }
 
-void SpriteRenderer::removeAnimatorOfKilledEnemy(std::shared_ptr<Enemy>& enemy) {
+void SpriteRenderer::removeAnimatorOfKilledEnemy(std::shared_ptr<Enemy> &enemy) {
     this->enemyAnimators.erase(std::remove_if(this->enemyAnimators.begin(), this->enemyAnimators.end(),
-        [&](EnemyAnimator* ea) {
-            return ea->enemy == enemy;
-        }));
+                                              [&](EnemyAnimator *ea) { return ea->enemy == enemy; }),
+                               this->enemyAnimators.end());
 }
 
-void SpriteRenderer::createAnimatorForSpawnedEnemy(std::shared_ptr<Enemy>& enemy) {
-    //Enemy *enemy = this->Levels[this->Level].createAnimatorForSpawnedEnemy();
+void SpriteRenderer::createAnimatorForSpawnedEnemy(std::shared_ptr<Enemy> &enemy) {
+    // Enemy *enemy = this->Levels[this->Level].createAnimatorForSpawnedEnemy();
     this->enemyAnimators.push_back(new EnemyAnimator(enemy, 0.4f, 3.0f, 1.5f));
 }

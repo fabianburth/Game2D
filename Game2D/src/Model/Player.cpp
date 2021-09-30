@@ -1,22 +1,21 @@
 #include "Player.h"
-#include "../View/ResourceManager.h"
+
 #include "../Animator.h"
+#include "../View/ResourceManager.h"
 
-Player::Player() {}
+Player::Player(std::array<float, 2> pos, std::array<float, 2> velocity) :
+    GameObject{pos}, velocity{velocity}, positionToMoveTo{pos}, ready{true} {}
 
-Player::Player(std::array<float, 2> pos, std::array<float, 2> velocity)
-        : GameObject{pos}, velocity{velocity}, positionToMoveTo{pos}, ready{true}, toggleSprite{true} {}
-
-void Player::setDirection(Direction direction) {
-    if (this->direction != direction) {
-        this->direction = direction;
+void Player::setDirection(Direction playerDirection) {
+    if (this->direction != playerDirection) {
+        this->direction = playerDirection;
         this->notifyObservers();
     }
 }
 
-void Player::setState(PengoState state) {
-    if (this->state != state) {
-        this->state = state;
+void Player::setState(PengoState pengoState) {
+    if (this->state != pengoState) {
+        this->state = pengoState;
         this->notifyObservers();
     }
 }
@@ -31,25 +30,27 @@ void Player::move(float deltaTime) {
             this->position[0] += this->velocity[0] * deltaTime;
         }
     }
-        //Movement to the left
+    // Movement to the left
     else if (this->position[0] > this->positionToMoveTo[0]) {
         if (this->positionToMoveTo[0] - this->position[0] >= -(this->velocity[0] * deltaTime)) {
             this->position[0] = this->positionToMoveTo[0];
             setState(PengoState::STAND);
             this->ready = true;
-        } else
+        } else {
             this->position[0] -= this->velocity[0] * deltaTime;
+        }
     }
-        //Movement up
+    // Movement up
     else if (this->position[1] < this->positionToMoveTo[1]) {
         if (this->positionToMoveTo[1] - this->position[1] <= (this->velocity[1] * deltaTime)) {
             this->position[1] = this->positionToMoveTo[1];
             setState(PengoState::STAND);
             this->ready = true;
-        } else
+        } else {
             this->position[1] += this->velocity[1] * deltaTime;
+        }
     }
-        //Movement down
+    // Movement down
     else if (this->position[1] > this->positionToMoveTo[1]) {
         if (this->positionToMoveTo[1] - this->position[1] >= -(this->velocity[1] * deltaTime)) {
             this->position[1] = this->positionToMoveTo[1];
@@ -59,7 +60,7 @@ void Player::move(float deltaTime) {
             this->position[1] -= this->velocity[1] * deltaTime;
         }
     } else {
-        //this->ready = true;
+        // this->ready = true;
     }
 }
 

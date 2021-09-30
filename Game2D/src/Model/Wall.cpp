@@ -1,24 +1,15 @@
 #include "Wall.h"
 
-Wall::Wall()
-{
-}
+Wall::Wall(WallSide side) : side{side} {}
 
-Wall::Wall(WallSide side)
-    :side{side}
-{
-}
-
-void Wall::setState(WallState state)
-{
-    if (this->state != state)
-    {
-        this->state = state;
+void Wall::setState(WallState wallState) {
+    if (this->state != wallState) {
+        this->state = wallState;
         this->notifyObservers();
     }
 }
 
-//void Wall::setSprite(Texture2D sprite)
+// void Wall::setSprite(Texture2D sprite)
 //{
 //    for (GameObject& wallComponent : wallComponents)
 //    {
@@ -26,28 +17,22 @@ void Wall::setState(WallState state)
 //    }
 //}
 
-void Wall::addWallComponent(GameObject component)
-{
+void Wall::addWallComponent(const GameObject &component) {
     wallComponents.push_back(component);
 }
 
-void Wall::registerObserver(Observer<Wall>* o)
-{
-	observers.push_back(o);
+void Wall::registerObserver(Observer<Wall> *o) {
+    observers.push_back(o);
 }
 
-void Wall::removeObserver(Observer<Wall>* o)
-{
+void Wall::removeObserver(Observer<Wall> *o) {
     observers.erase(std::remove_if(observers.begin(), observers.end(),
-        [&](Observer<Wall>* comparison) {
-            return comparison == o;
-        }));
+                                   [&](Observer<Wall> *comparison) { return comparison == o; }),
+                    observers.end());
 }
 
-void Wall::notifyObservers()
-{
-    for (Observer<Wall>* observer : observers)
-    {
+void Wall::notifyObservers() {
+    for (Observer<Wall> *observer : observers) {
         observer->update(this);
     }
 }

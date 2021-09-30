@@ -2,10 +2,9 @@
 // Created by burth on 12.09.2021.
 //
 #include "../Game2D/src/Model/Enemy.h"
-#include <memory>
-
 
 #include "gtest/gtest.h"
+#include <memory>
 
 struct TestEnemy : public Enemy {
     using Enemy::getProbabilityArray;

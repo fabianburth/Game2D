@@ -51,9 +51,8 @@ set(SOURCES
         ${CMAKE_SOURCE_DIR}/Game2D/src/View/WallAnimator.cpp
         ${CMAKE_SOURCE_DIR}/Game2D/src/Model/Score.cpp
         ${CMAKE_SOURCE_DIR}/Game2D/src/util.cpp
-        ${CMAKE_SOURCE_DIR}/Game2D/src/View/SoundDevice.cpp
-        ${CMAKE_SOURCE_DIR}/Game2D/src/View/SoundBuffer.cpp
-        ${CMAKE_SOURCE_DIR}/Game2D/src/View/SoundSource.cpp)
+        ${CMAKE_SOURCE_DIR}/Game2D/src/View/SoundManager.cpp
+        ${CMAKE_SOURCE_DIR}/Game2D/src/View/SoundModule.cpp)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/Dependencies/glfw)
 add_subdirectory(${CMAKE_SOURCE_DIR}/Dependencies/glew/build/cmake)

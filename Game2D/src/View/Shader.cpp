@@ -2,14 +2,12 @@
 
 #include <iostream>
 
-Shader& Shader::Use()
-{
+Shader &Shader::Use() {
     glUseProgram(this->ID);
     return *this;
 }
 
-void Shader::Compile(const char* vertexSource, const char* fragmentSource)
-{
+void Shader::Compile(const char *vertexSource, const char *fragmentSource) {
     unsigned int sVertex, sFragment, gShader;
     // vertex Shader
     sVertex = glCreateShader(GL_VERTEX_SHADER);
@@ -32,65 +30,52 @@ void Shader::Compile(const char* vertexSource, const char* fragmentSource)
     glDeleteShader(sFragment);
 }
 
-void Shader::SetFloat(const char* name, float value, bool useShader)
-{
+void Shader::SetFloat(const char *name, float value, bool useShader) {
     if (useShader)
         this->Use();
     glUniform1f(glGetUniformLocation(this->ID, name), value);
 }
 
-void Shader::SetInteger(const char* name, int value, bool useShader)
-{
+void Shader::SetInteger(const char *name, int value, bool useShader) {
     if (useShader)
         this->Use();
     glUniform1i(glGetUniformLocation(this->ID, name), value);
 }
 
-void Shader::SetVector2f(const char* name, float x, float y, bool useShader)
-{
+void Shader::SetVector2f(const char *name, float x, float y, bool useShader) {
     if (useShader)
         this->Use();
     glUniform2f(glGetUniformLocation(this->ID, name), x, y);
 }
 
-void Shader::SetVector3f(const char* name, float x, float y, float z, bool useShader)
-{
+void Shader::SetVector3f(const char *name, float x, float y, float z, bool useShader) {
     if (useShader)
         this->Use();
     glUniform3f(glGetUniformLocation(this->ID, name), x, y, z);
 }
 
-void Shader::SetVector4f(const char* name, float x, float y, float z, float w, bool useShader)
-{
+void Shader::SetVector4f(const char *name, float x, float y, float z, float w, bool useShader) {
     if (useShader)
         this->Use();
     glUniform4f(glGetUniformLocation(this->ID, name), x, y, z, w);
 }
 
-void Shader::checkCompileErrors(unsigned int object, std::string type)
-{
+void Shader::checkCompileErrors(unsigned int object, std::string type) {
     int success;
     char infoLog[1024];
-    if (type != "PROGRAM")
-    {
+    if (type != "PROGRAM") {
         glGetShaderiv(object, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
+        if (!success) {
             glGetShaderInfoLog(object, 1024, NULL, infoLog);
             std::cout << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- "
-                << std::endl;
+                      << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
-    }
-    else
-    {
+    } else {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
-        if (!success)
-        {
+        if (!success) {
             glGetProgramInfoLog(object, 1024, NULL, infoLog);
             std::cout << "| ERROR::Shader: Link-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- "
-                << std::endl;
+                      << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
 }

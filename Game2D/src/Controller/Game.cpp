@@ -1,16 +1,13 @@
 #include "Game.h"
-#include "../View/ResourceManager.h"
-#include <array>
 
+#include "../View/ResourceManager.h"
+
+#include <array>
 #include <iostream>
 // Game-related State data
 
-Game::Game(unsigned int width, unsigned int height)
-        : PengoState(GameState::GAME_ACTIVE), Keys(), Width(width), Height(height) {}
-
-Game::~Game() {
-    delete this->Renderer;
-}
+Game::Game(unsigned int width, unsigned int height) :
+    PengoState(GameState::GAME_ACTIVE), Keys(), Width(width), Height(height) {}
 
 void Game::Init() {
     // load shaders
@@ -20,6 +17,7 @@ void Game::Init() {
     // set render-specific controls
     Shader shader = ResourceManager::GetShader("sprite");
     this->Renderer = new SpriteRenderer(shader);
+    // this->soundModule = new SoundModule();
 
     // load levels
     GameLevel one;
@@ -98,6 +96,7 @@ void Game::initLevel() {
         this->Renderer->enemyAnimators.clear();
         this->Levels[this->Level].removeObserver(this);
         this->Levels[this->Level].removeObserver(this->Renderer);
+        this->Levels[this->Level].removeObserver(this->soundModule);
 
         this->carryOverScore();
         ++this->Level;
@@ -110,15 +109,11 @@ void Game::initLevel() {
     }
     this->Levels[this->Level].registerObserver(this);
     this->Levels[this->Level].registerObserver(this->Renderer);
+    this->Levels[this->Level].registerObserver(this->soundModule);
     this->Renderer->initLevelView(&this->Levels[this->Level]);
     this->Levels[this->Level].initStates();
-}
-
-void Game::update(GameLevel *s) {
 }
 
 void Game::carryOverScore() {
     this->Levels[this->Level + 1].score.score = this->Levels[this->Level].score.score;
 }
-
-
